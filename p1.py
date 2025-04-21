@@ -258,5 +258,7 @@ def get_chat_history():
     return jsonify(session.get('chat_history', []))
 
 if __name__ == '__main__':
-    print("Starting Flask server...")  # Debug log
-    app.run(debug=True)
+    # Get port from environment variable or use default
+    port = int(os.environ.get('PORT', 5000))
+    # Run the app on all available network interfaces
+    app.run(host='0.0.0.0', port=port, debug=True)
