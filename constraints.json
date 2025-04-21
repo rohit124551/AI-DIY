@@ -1,0 +1,18 @@
+{
+    "max_steps": 5,
+    "max_response_length": 500,
+    "allowed_topics": [
+        "painting",
+        "plumbing",
+        "flooring",
+        "electrical",
+        "carpentry",
+        "gardening",
+        "renovation",
+        "repair",
+        "maintenance",
+        "installation",
+        "decorating",
+        "landscaping"
+    ]
+} 

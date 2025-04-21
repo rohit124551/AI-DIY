@@ -63,6 +63,15 @@
             border-radius: 5px;
             margin: 5px 0;
             max-width: 80%;
+            white-space: pre-line;
+        }
+        .message-timestamp {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
+        }
+        [data-theme="dark"] .message-timestamp {
+            color: #aaa;
         }
         .input-container {
             display: flex;
@@ -118,6 +127,35 @@
             color: var(--text-color);
             text-align: center;
         }
+        .step-list {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        .step-list li {
+            margin-bottom: 8px;
+        }
+        .safety-tip {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        [data-theme="dark"] .safety-tip {
+            background-color: #332d00;
+            border-left-color: #ffd700;
+        }
+        .professional-note {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        [data-theme="dark"] .professional-note {
+            background-color: #1a2a1a;
+            border-left-color: #2ecc71;
+        }
     </style>
 </head>
 <body>
@@ -153,64 +191,94 @@
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             setTheme(savedTheme);
+            
+            // Load chat history when page loads
+            loadChatHistory();
         });
 
-        // DIY responses
-        const diyResponses = {
-            painting: [
-                "For painting walls, start by cleaning the surface and applying painter's tape to edges.",
-                "Use a primer before applying paint for better coverage and durability.",
-                "When painting, work from top to bottom and maintain a wet edge to avoid lap marks.",
-                "Choose the right paint type for your surface - latex for walls, oil-based for trim.",
-                "Always use drop cloths to protect floors and furniture."
-            ],
-            plumbing: [
-                "Always turn off the water supply before starting any plumbing work.",
-                "Use plumber's tape on threaded connections to prevent leaks.",
-                "Keep a bucket handy when disconnecting pipes to catch residual water.",
-                "For leaky faucets, check and replace washers or cartridges.",
-                "Use a pipe wrench for better grip when working with pipes."
-            ],
-            flooring: [
-                "Acclimate wood flooring in your home for at least 72 hours before installation.",
-                "Start laying tiles from the center of the room and work outward for the best appearance.",
-                "Use spacers between tiles to ensure even grout lines.",
-                "For laminate flooring, leave expansion gaps around the perimeter.",
-                "Always use underlayment for floating floors."
-            ],
-            electrical: [
-                "Always turn off power at the breaker before working on electrical projects.",
-                "Use a voltage tester to confirm power is off before touching any wires.",
-                "Follow local electrical codes when installing new fixtures or outlets.",
-                "Use wire nuts to secure connections and electrical tape for additional protection.",
-                "Label your circuit breaker panel for easy identification."
-            ],
-            default: [
-                "What DIY project are you working on? I can help with painting, plumbing, flooring, or electrical work.",
-                "Try asking about specific home improvement tasks like wall painting or fixing a leaky faucet.",
-                "I can provide step-by-step instructions for many home improvement projects. What are you interested in?"
-            ]
-        };
-
-        function getDiyResponse(message) {
-            const lowerMessage = message.toLowerCase();
-            
-            if (lowerMessage.includes('paint') || lowerMessage.includes('wall')) {
-                return diyResponses.painting[Math.floor(Math.random() * diyResponses.painting.length)];
-            } else if (lowerMessage.includes('plumb') || lowerMessage.includes('pipe') || lowerMessage.includes('leak')) {
-                return diyResponses.plumbing[Math.floor(Math.random() * diyResponses.plumbing.length)];
-            } else if (lowerMessage.includes('floor') || lowerMessage.includes('tile')) {
-                return diyResponses.flooring[Math.floor(Math.random() * diyResponses.flooring.length)];
-            } else if (lowerMessage.includes('electr') || lowerMessage.includes('wire') || lowerMessage.includes('outlet')) {
-                return diyResponses.electrical[Math.floor(Math.random() * diyResponses.electrical.length)];
-            } else {
-                return diyResponses.default[Math.floor(Math.random() * diyResponses.default.length)];
-            }
+        function loadChatHistory() {
+            fetch('/get_chat_history')
+                .then(response => response.json())
+                .then(history => {
+                    const chatContainer = document.getElementById('chat-container');
+                    chatContainer.innerHTML = ''; // Clear initial message
+                    
+                    history.forEach(msg => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = msg.role === 'user' ? 'user-message' : 'bot-message';
+                        if (msg.role === 'assistant') {
+                            messageDiv.innerHTML = formatResponse(msg.content);
+                        } else {
+                            messageDiv.textContent = msg.content;
+                        }
+                        
+                        const timestampDiv = document.createElement('div');
+                        timestampDiv.className = 'message-timestamp';
+                        const date = new Date(msg.timestamp);
+                        timestampDiv.textContent = date.toLocaleString();
+                        
+                        messageDiv.appendChild(timestampDiv);
+                        chatContainer.appendChild(messageDiv);
+                    });
+                    
+                    // Scroll to bottom
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error loading chat history:', error);
+                });
         }
 
         function clearHistory() {
-            const chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML = '<div class="bot-message">Hello! I\'m your DIY Home Improvement assistant. Ask me about painting, plumbing, flooring, or electrical projects!</div>';
+            fetch('/clear_history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const chatContainer = document.getElementById('chat-container');
+                    chatContainer.innerHTML = '<div class="bot-message">Hello! I\'m your DIY Home Improvement assistant. Ask me about painting, plumbing, flooring, or electrical projects!</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error clearing history:', error);
+            });
+        }
+
+        function formatResponse(text) {
+            // Split the text into lines
+            const lines = text.split('\n');
+            let formattedText = '';
+            
+            for (let line of lines) {
+                if (line.startsWith('Safety tip:')) {
+                    formattedText += `<div class="safety-tip">${line}</div>`;
+                } else if (line.startsWith('Note:')) {
+                    formattedText += `<div class="professional-note">${line}</div>`;
+                } else if (line.match(/^\d+\./)) {
+                    // This is a step
+                    if (!formattedText.includes('<ol class="step-list">')) {
+                        formattedText += '<ol class="step-list">';
+                    }
+                    formattedText += `<li>${line.replace(/^\d+\.\s*/, '')}</li>`;
+                } else {
+                    // Close the ordered list if it's open
+                    if (formattedText.includes('<ol class="step-list">') && !formattedText.includes('</ol>')) {
+                        formattedText += '</ol>';
+                    }
+                    formattedText += line + '<br>';
+                }
+            }
+            
+            // Close the ordered list if it's still open
+            if (formattedText.includes('<ol class="step-list">') && !formattedText.includes('</ol>')) {
+                formattedText += '</ol>';
+            }
+            
+            return formattedText;
         }
 
         function sendMessage() {
@@ -224,6 +292,12 @@
             const userDiv = document.createElement('div');
             userDiv.className = 'user-message';
             userDiv.textContent = message;
+            
+            const userTimestamp = document.createElement('div');
+            userTimestamp.className = 'message-timestamp';
+            userTimestamp.textContent = new Date().toLocaleString();
+            userDiv.appendChild(userTimestamp);
+            
             chatContainer.appendChild(userDiv);
             
             // Clear input
@@ -239,24 +313,61 @@
             // Scroll to bottom
             chatContainer.scrollTop = chatContainer.scrollHeight;
             
-            // Simulate response delay
-            setTimeout(() => {
+            // Get bot response
+            fetch('/get_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+            })
+            .then(response => response.json())
+            .then(data => {
                 // Remove loading message
                 const loadingMessage = document.getElementById('loading-message');
                 if (loadingMessage) {
                     loadingMessage.remove();
                 }
                 
-                // Get and add bot response
-                const response = getDiyResponse(message);
+                // Add bot response to chat
                 const botDiv = document.createElement('div');
                 botDiv.className = 'bot-message';
-                botDiv.textContent = response;
+                botDiv.innerHTML = formatResponse(data.response);
+                
+                const botTimestamp = document.createElement('div');
+                botTimestamp.className = 'message-timestamp';
+                botTimestamp.textContent = new Date().toLocaleString();
+                botDiv.appendChild(botTimestamp);
+                
                 chatContainer.appendChild(botDiv);
                 
                 // Scroll to bottom
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-            }, 1000);
+            })
+            .catch(error => {
+                // Remove loading message
+                const loadingMessage = document.getElementById('loading-message');
+                if (loadingMessage) {
+                    loadingMessage.remove();
+                }
+                
+                // Add error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'bot-message';
+                errorDiv.textContent = 'Sorry, there was an error processing your request.';
+                
+                const errorTimestamp = document.createElement('div');
+                errorTimestamp.className = 'message-timestamp';
+                errorTimestamp.textContent = new Date().toLocaleString();
+                errorDiv.appendChild(errorTimestamp);
+                
+                chatContainer.appendChild(errorDiv);
+                
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                console.error('Error:', error);
+            });
         }
         
         // Allow Enter key to send message
