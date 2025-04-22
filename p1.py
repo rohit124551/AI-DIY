@@ -85,24 +85,10 @@ def get_gemini_response(prompt):
     try:
         print(f"Sending to Gemini: {prompt}")  # Debug log
         
-        # Add strict DIY context to the prompt
-        diy_context = f"""You are a DIY home improvement expert. Follow these rules strictly:
-        1. Only provide answers related to home improvement, renovation, repair, or maintenance
-        2. If the question is not about home improvement, respond with: "I can only help with DIY home improvement projects. Please ask about home improvement topics like painting, plumbing, flooring, or electrical work."
-        3. Always provide answers in clear, numbered steps (maximum {constraints['max_steps']} steps)
-        4. Keep each step brief and actionable
-        5. Focus on essential information only
-        6. Include safety precautions when relevant
-        7. Use simple, clear language
-        8. If a task requires professional help, mention it clearly
-        9. Keep the total response under {constraints['max_response_length']} characters
-        
-        Example format:
-        1. Step one (brief and clear)
-        2. Step two (brief and clear)
-        3. Step three (brief and clear)
-        Safety tip: [if applicable]
-        Note: [if professional help needed]"""
+        # Simplified context without strict constraints
+        diy_context = """You are a helpful DIY home improvement assistant. Provide detailed, practical advice for home improvement projects. 
+        Include relevant information about materials, tools, steps, safety, and alternatives when appropriate.
+        Feel free to provide as much detail as needed to help the user complete their project successfully."""
         
         full_prompt = f"{diy_context}\n\nUser question: {prompt}"
         
@@ -156,23 +142,6 @@ def get_response():
     user_message = request.json.get('message', '')
     print(f"Received message: {user_message}")  # Debug log
     
-    # First check: Verify against allowed topics from constraints file
-    if not is_topic_allowed(user_message):
-        # Second check: Ask Gemini if this is a DIY home improvement topic
-        verification_prompt = f"Is this a DIY home improvement question? Answer with only 'yes' or 'no': {user_message}"
-        try:
-            model = genai.GenerativeModel('gemini-2.0-flash')
-            verification_response = model.generate_content(verification_prompt)
-            if 'yes' not in verification_response.text.lower():
-                return jsonify({
-                    'response': "I can only help with DIY home improvement projects. Please ask about home improvement topics like painting, plumbing, flooring, or electrical work."
-                })
-        except Exception as e:
-            print(f"Error verifying topic: {str(e)}")
-            return jsonify({
-                'response': "I can only help with DIY home improvement projects. Please ask about home improvement topics like painting, plumbing, flooring, or electrical work."
-            })
-    
     # Get chat history from session
     chat_history = session.get('chat_history', [])
     
@@ -206,9 +175,6 @@ def get_response():
         # Update session with new chat history
         session['chat_history'] = chat_history
         
-        # Save chat history to file
-        save_chat_history(chat_history)
-        
         return jsonify({'response': response})
     except Exception as e:
         print(f"Error in get_response route: {str(e)}")
@@ -216,16 +182,7 @@ def get_response():
         
         # Fall back to our basic response system if Gemini fails
         print("Falling back to basic responses")  # Debug log
-        if 'paint' in user_message.lower():
-            response = "1. Clean the surface thoroughly\n2. Apply painter's tape to edges\n3. Use a primer for better coverage\n4. Paint from top to bottom\nSafety tip: Ensure proper ventilation"
-        elif any(word in user_message.lower() for word in ['plumb', 'pipe', 'leak', 'faucet']):
-            response = "1. Turn off water supply\n2. Use plumber's tape on connections\n3. Keep a bucket for residual water\n4. Check for leaks after repair\nSafety tip: Wear protective gloves"
-        elif any(word in user_message.lower() for word in ['floor', 'tile', 'wood']):
-            response = "1. Acclimate flooring for 72 hours\n2. Start from center of room\n3. Use spacers for even gaps\n4. Follow manufacturer's instructions\nNote: Complex patterns may need professional help"
-        elif any(word in user_message.lower() for word in ['electric', 'wire', 'outlet', 'light']):
-            response = "1. Turn off power at breaker\n2. Use voltage tester to confirm\n3. Follow local electrical codes\n4. Secure connections properly\nSafety tip: Always turn off power first\nNote: Complex wiring needs licensed electrician"
-        else:
-            response = "I can only help with DIY home improvement projects. Please ask about specific tasks like painting, plumbing, flooring, or electrical work."
+        response = "I'm here to help with your DIY home improvement questions. Please ask me anything about home improvement, and I'll do my best to provide helpful information."
         
         # Add bot response to history even for fallback responses
         chat_history.append({
@@ -234,9 +191,8 @@ def get_response():
             "timestamp": datetime.now().isoformat()
         })
         
-        # Update session and save to file
+        # Update session
         session['chat_history'] = chat_history
-        save_chat_history(chat_history)
         
         return jsonify({'response': response})
 
@@ -256,6 +212,10 @@ def clear_history():
 def get_chat_history():
     """Get the current chat history."""
     return jsonify(session.get('chat_history', []))
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     # Get port from environment variable or use default

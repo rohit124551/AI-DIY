@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}DIY Home Improvement Guide{% endblock %}</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --chat-bg: #f9f9f9;
+            --user-msg-bg: #e6f7ff;
+            --bot-msg-bg: #f0f0f0;
+            --input-bg: #ffffff;
+            --input-border: #cccccc;
+            --button-bg: #4CAF50;
+            --button-hover: #45a049;
+            --clear-btn-bg: #f44336;
+            --clear-btn-hover: #d32f2f;
+            --nav-bg: #2c3e50;
+            --nav-text: #ffffff;
+            --nav-hover: #34495e;
+            --footer-bg: #2c3e50;
+            --footer-text: #ffffff;
+            --footer-hover: #34495e;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --chat-bg: #2d2d2d;
+            --user-msg-bg: #1e3a5f;
+            --bot-msg-bg: #3d3d3d;
+            --input-bg: #2d2d2d;
+            --input-border: #404040;
+            --button-bg: #2e7d32;
+            --button-hover: #1b5e20;
+            --clear-btn-bg: #c62828;
+            --clear-btn-hover: #b71c1c;
+            --nav-bg: #1a1a1a;
+            --nav-text: #ffffff;
+            --nav-hover: #2d2d2d;
+            --footer-bg: #1a1a1a;
+            --footer-text: #ffffff;
+            --footer-hover: #2d2d2d;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--nav-bg);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--nav-text);
+        }
+
+        .logo h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--nav-text);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--nav-hover);
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 2rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--footer-hover);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                justify-content: center;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <h1>DIY AI Assistant</h1>
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="https://github.com/yourusername/diy-ai-assistant" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+            </div>
+            <div class="copyright">
+                © 2025 DIY AI Assistant. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

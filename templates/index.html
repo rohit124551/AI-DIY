@@ -1,7 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>DIY Home Improvement Guide</title>
+{% extends "base.html" %}
+
+{% block title %}DIY Home Improvement Guide{% endblock %}
+
+{% block content %}
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        ☀️
+    </button>
+    <h1>DIY Home Improvement Guide</h1>
+
+    <!-- Chat Section -->
+    <div class="chat-container" id="chat-container">
+        <div class="bot-message">Hello! I'm your DIY Home Improvement assistant. Ask me anything about home improvement projects!</div>
+    </div>
+    <div class="input-container">
+        <input type="text" id="user-input" placeholder="Ask about a DIY project...">
+        <button onclick="sendMessage()">Send</button>
+        <button class="clear-btn" onclick="clearHistory()">Clear History</button>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
     <style>
         :root {
             --bg-color: #ffffff;
@@ -157,23 +175,9 @@
             border-left-color: #2ecc71;
         }
     </style>
-</head>
-<body>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-        ☀️
-    </button>
-    <h1>DIY Home Improvement Guide</h1>
+{% endblock %}
 
-    <!-- Chat Section -->
-    <div class="chat-container" id="chat-container">
-        <div class="bot-message">Hello! I'm your DIY Home Improvement assistant. Ask me about painting, plumbing, flooring, or electrical projects!</div>
-    </div>
-    <div class="input-container">
-        <input type="text" id="user-input" placeholder="Ask about a DIY project...">
-        <button onclick="sendMessage()">Send</button>
-        <button class="clear-btn" onclick="clearHistory()">Clear History</button>
-    </div>
-
+{% block extra_js %}
     <script>
         // Theme handling
         function setTheme(theme) {
@@ -377,5 +381,4 @@
             }
         });
     </script>
-</body>
-</html>
+{% endblock %}

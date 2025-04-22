@@ -1,6 +1,7 @@
 {
-    "max_steps": 5,
-    "max_response_length": 500,
+    "max_steps": 8,
+    "max_response_length": 1000,
+    "min_steps": 3,
     "allowed_topics": [
         "painting",
         "plumbing",
@@ -14,5 +15,13 @@
         "installation",
         "decorating",
         "landscaping"
-    ]
+    ],
+    "response_guidelines": {
+        "include_materials": true,
+        "include_tools": true,
+        "include_safety": true,
+        "include_alternatives": true,
+        "include_troubleshooting": true,
+        "allow_follow_up": true
+    }
 } 

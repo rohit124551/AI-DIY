@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - DIY AI Assistant{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <h1>About DIY AI Assistant</h1>
+    
+    <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>DIY AI Assistant is dedicated to making home improvement accessible to everyone. We combine the power of artificial intelligence with practical home improvement knowledge to provide personalized, step-by-step guidance for your DIY projects.</p>
+    </section>
+
+    <section class="about-section">
+        <h2>What We Offer</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Expert Guidance</h3>
+                <p>Get detailed, step-by-step instructions for various home improvement projects, from simple repairs to complex renovations.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Safety First</h3>
+                <p>Receive important safety tips and precautions for each project, ensuring you can work confidently and securely.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Material Lists</h3>
+                <p>Access comprehensive lists of required materials and tools for each project, helping you prepare effectively.</p>
+            </div>
+            <div class="feature-card">
+                <h3>24/7 Availability</h3>
+                <p>Get instant assistance whenever you need it, day or night, without waiting for professional consultation.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <h2>How It Works</h2>
+        <ol class="how-it-works">
+            <li>Ask your home improvement question in plain language</li>
+            <li>Receive detailed, step-by-step instructions</li>
+            <li>Get safety tips and material requirements</li>
+            <li>Follow the guidance at your own pace</li>
+            <li>Ask follow-up questions as needed</li>
+        </ol>
+    </section>
+
+    <section class="about-section">
+        <h2>Our Technology</h2>
+        <p>Powered by advanced AI technology, DIY AI Assistant uses natural language processing to understand your questions and provide relevant, practical answers. Our system continuously learns from interactions to improve the quality and accuracy of responses.</p>
+    </section>
+
+    <section class="about-section">
+        <h2>Disclaimer</h2>
+        <p>While DIY AI Assistant provides detailed guidance, we recommend consulting with professional contractors for complex projects or when in doubt. Always prioritize safety and follow local building codes and regulations.</p>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .about-section {
+        margin-bottom: 3rem;
+    }
+
+    .about-section h2 {
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .about-section p {
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .feature-card {
+        background-color: var(--chat-bg);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+        color: var(--text-color);
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .how-it-works {
+        padding-left: 1.5rem;
+        line-height: 1.8;
+    }
+
+    .how-it-works li {
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .about-container {
+            padding: 1rem;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 
