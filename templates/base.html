@@ -133,10 +133,38 @@
         .logo h1 {
             margin: 0;
             font-size: 1.5rem;
-            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
             animation: gradientFlow 3s ease infinite;
+            text-shadow: 0 0 1px rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .logo h1 {
+            background: linear-gradient(45deg, #66bb6a, #42a5f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+                background-size: 200% 200%;
+            }
+            50% {
+                background-position: 100% 50%;
+                background-size: 200% 200%;
+            }
+            100% {
+                background-position: 0% 50%;
+                background-size: 200% 200%;
+            }
         }
 
         .nav-links {
@@ -248,12 +276,6 @@
             animation: fadeIn 1s ease;
         }
 
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -317,25 +339,84 @@
         }
 
         .theme-toggle {
-            background: none;
-            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
             padding: 8px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             margin-left: 1rem;
+            width: 40px;
+            height: 40px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
         }
 
         .theme-toggle:hover {
             transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         .theme-toggle i {
+            position: absolute;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Light mode (sun) icon */
+        .theme-toggle .fa-sun {
+            color: #ffd700;
             font-size: 1.2rem;
-            color: var(--theme-toggle-icon);
+            filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        /* Dark mode (moon) icon */
+        .theme-toggle .fa-moon {
+            color: #ffffff;
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        /* Dark mode active states */
+        [data-theme="dark"] .theme-toggle .fa-sun {
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-moon {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 768px) {
@@ -349,7 +430,8 @@
 <body>
     <div id="vanta-background"></div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-        <i class="fas fa-sun" id="theme-icon"></i>
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
     </button>
     <nav class="navbar">
         <a href="/" class="logo">
@@ -360,7 +442,8 @@
             <a href="/about">About Us</a>
             <a href="https://github.com/yourusername/diy-ai-assistant" target="_blank">GitHub</a>
             <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-                <i class="fas fa-sun" id="theme-icon"></i>
+                <i class="fas fa-sun"></i>
+                <i class="fas fa-moon"></i>
             </button>
         </div>
     </nav>
@@ -443,15 +526,36 @@
         // Update the theme toggle function
         function toggleTheme() {
             const html = document.documentElement;
-            const themeIcon = document.getElementById('theme-icon');
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             
+            // Add transition class to html for smooth background transition
+            html.classList.add('theme-transition');
+            
+            // Update theme
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             
-            // Update icon
-            themeIcon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+            // Update icons with animation
+            const sunIcon = document.querySelector('.theme-toggle .fa-sun');
+            const moonIcon = document.querySelector('.theme-toggle .fa-moon');
+            
+            if (newTheme === 'dark') {
+                sunIcon.style.transform = 'rotate(-90deg) scale(0.5)';
+                sunIcon.style.opacity = '0';
+                moonIcon.style.transform = 'rotate(0deg) scale(1)';
+                moonIcon.style.opacity = '1';
+            } else {
+                sunIcon.style.transform = 'rotate(0deg) scale(1)';
+                sunIcon.style.opacity = '1';
+                moonIcon.style.transform = 'rotate(90deg) scale(0.5)';
+                moonIcon.style.opacity = '0';
+            }
+            
+            // Remove transition class after animation
+            setTimeout(() => {
+                html.classList.remove('theme-transition');
+            }, 500);
             
             // Trigger theme change event for Vanta.js
             const event = new CustomEvent('themechange', { detail: { theme: newTheme } });
@@ -461,10 +565,24 @@
         // Initialize theme on page load
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
-            const themeIcon = document.getElementById('theme-icon');
+            const html = document.documentElement;
+            const sunIcon = document.querySelector('.theme-toggle .fa-sun');
+            const moonIcon = document.querySelector('.theme-toggle .fa-moon');
             
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            themeIcon.className = savedTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+            html.setAttribute('data-theme', savedTheme);
+            
+            // Set initial icon states
+            if (savedTheme === 'dark') {
+                sunIcon.style.transform = 'rotate(-90deg) scale(0.5)';
+                sunIcon.style.opacity = '0';
+                moonIcon.style.transform = 'rotate(0deg) scale(1)';
+                moonIcon.style.opacity = '1';
+            } else {
+                sunIcon.style.transform = 'rotate(0deg) scale(1)';
+                sunIcon.style.opacity = '1';
+                moonIcon.style.transform = 'rotate(90deg) scale(0.5)';
+                moonIcon.style.opacity = '0';
+            }
         });
     </script>
 
