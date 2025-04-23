@@ -6,26 +6,34 @@ A modern, interactive AI-powered assistant for DIY home improvement projects. Th
 
 - 🤖 AI-powered DIY assistance using Google's Gemini API
 - 💬 Interactive chat interface with real-time responses
-- 🎨 Beautiful UI with Vanta.js background animations
-- 🌓 Dark/Light theme support
+- 🎨 Beautiful UI with Vanta.js birds animation background
+- 🌓 Animated dark/light theme toggle with smooth transitions
 - 📱 Responsive design for all devices
 - 🔒 Secure API key handling
 - 💾 Chat history persistence
 - 🎯 Focused responses for DIY topics
+- ✨ Modern glassmorphism design
+- 🎭 Theme-aware components and animations
+- 🔄 Smooth transitions and hover effects
+- 📱 Mobile-optimized interface
 
 ## Technologies Used
 
 - **Backend:**
-  - Python
-  - Flask
-  - Google Gemini API
+  - Python 3.8+
+  - Flask web framework
+  - Google Gemini API for AI responses
+  - Flask-Session for chat history
+  - Flask-CORS for API handling
 
 - **Frontend:**
-  - HTML5
-  - CSS3
-  - JavaScript
-  - Vanta.js for background effects
-  - Font Awesome for icons
+  - HTML5 & CSS3 with modern features
+  - JavaScript (ES6+)
+  - Vanta.js for interactive background
+  - Font Awesome 6.0 for icons
+  - Three.js for 3D effects
+  - CSS Grid & Flexbox for layouts
+  - CSS Variables for theming
 
 ## Prerequisites
 
@@ -34,6 +42,7 @@ Before running this project, make sure you have:
 1. Python 3.8 or higher installed
 2. Google Gemini API key
 3. Modern web browser with JavaScript enabled
+4. Git (for cloning the repository)
 
 ## Installation
 
@@ -78,17 +87,6 @@ python p1.py
 http://localhost:5000
 ```
 
-## Usage
-
-1. Visit the website
-2. Type your DIY home improvement question in the chat input
-3. Receive detailed responses including:
-   - Step-by-step instructions
-   - Required materials and tools
-   - Safety tips
-   - Professional recommendations
-   - Alternative methods
-
 ## Features in Detail
 
 ### Chat Interface
@@ -96,25 +94,42 @@ http://localhost:5000
 - Message history persistence
 - Clear formatting for instructions and tips
 - Timestamp for each message
+- Smooth animations for messages
+- Loading indicators
+- Error handling
 
 ### Theme Support
-- Light and dark mode
-- Smooth transitions
+- Light and dark mode with animated transitions
+- Smooth icon animations (sun/moon)
 - Persistent theme preference
+- Theme-aware Vanta.js background
 - Adaptive UI elements
+- Glassmorphism effects
 
 ### Responsive Design
 - Mobile-friendly interface
 - Adaptive layout for all screen sizes
 - Touch-friendly controls
 - Optimized performance
+- Flexible grid system
+- Responsive typography
+
+### Visual Effects
+- Interactive birds animation background
+- Smooth transitions and hover effects
+- Modern glassmorphism design
+- Gradient animations
+- Shadow effects
+- Loading animations
 
 ## Security
 
-- API keys are stored as environment variables
+- API keys stored as environment variables
 - Input validation and sanitization
 - Secure session handling
 - Protected routes and endpoints
+- CORS configuration
+- Error handling
 
 ## Contributing
 
@@ -123,6 +138,18 @@ http://localhost:5000
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## Git Configuration
+
+To handle line endings correctly across different operating systems:
+
+```bash
+# On Windows
+git config --global core.autocrlf true
+
+# On macOS/Linux
+git config --global core.autocrlf input
+```
 
 ## License
 
@@ -134,6 +161,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Vanta.js for beautiful background effects
 - Font Awesome for icons
 - Flask community for the excellent web framework
+- Three.js for 3D rendering capabilities
 
 ## Support
 
@@ -147,6 +175,9 @@ For support, please open an issue in the GitHub repository or contact us through
 - Integration with home improvement stores
 - Community features and project sharing
 - Augmented reality visualization
+- Multi-language support
+- Project saving and sharing
+- Mobile app version
 
 ---
 
