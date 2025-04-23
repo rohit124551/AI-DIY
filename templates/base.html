@@ -2,66 +2,110 @@
 <html>
 <head>
     <title>{% block title %}DIY Home Improvement Guide{% endblock %}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #ffffff;
-            --text-color: #333333;
-            --chat-bg: #f9f9f9;
-            --user-msg-bg: #e6f7ff;
-            --bot-msg-bg: #f0f0f0;
-            --input-bg: #ffffff;
+            --bg-color: #f0f5ff;
+            --bg-gradient: linear-gradient(135deg, #f0f5ff 0%, #e6f0ff 100%);
+            --text-color: #2c3e50;
+            --chat-bg: rgba(255, 255, 255, 0.9);
+            --user-msg-bg: rgba(230, 247, 255, 0.9);
+            --bot-msg-bg: rgba(240, 240, 240, 0.9);
+            --input-bg: rgba(255, 255, 255, 0.9);
             --input-border: #cccccc;
             --button-bg: #4CAF50;
             --button-hover: #45a049;
             --clear-btn-bg: #f44336;
             --clear-btn-hover: #d32f2f;
-            --nav-bg: #2c3e50;
+            --nav-bg: rgba(44, 62, 80, 0.95);
             --nav-text: #ffffff;
-            --nav-hover: #34495e;
-            --footer-bg: #2c3e50;
+            --nav-hover: rgba(52, 73, 94, 0.95);
+            --footer-bg: rgba(44, 62, 80, 0.95);
             --footer-text: #ffffff;
-            --footer-hover: #34495e;
+            --footer-hover: rgba(52, 73, 94, 0.95);
+            --accent-color: #4CAF50;
+            --gradient-start: #4CAF50;
+            --gradient-end: #2196F3;
+            --glow-color: rgba(76, 175, 80, 0.2);
         }
 
         [data-theme="dark"] {
-            --bg-color: #1a1a1a;
+            --bg-color: #1a1f2c;
+            --bg-gradient: linear-gradient(135deg, #1a1f2c 0%, #2c3e50 100%);
             --text-color: #ffffff;
-            --chat-bg: #2d2d2d;
-            --user-msg-bg: #1e3a5f;
-            --bot-msg-bg: #3d3d3d;
-            --input-bg: #2d2d2d;
+            --chat-bg: rgba(45, 45, 45, 0.9);
+            --user-msg-bg: rgba(30, 58, 95, 0.9);
+            --bot-msg-bg: rgba(61, 61, 61, 0.9);
+            --input-bg: rgba(45, 45, 45, 0.9);
             --input-border: #404040;
             --button-bg: #2e7d32;
             --button-hover: #1b5e20;
             --clear-btn-bg: #c62828;
             --clear-btn-hover: #b71c1c;
-            --nav-bg: #1a1a1a;
+            --nav-bg: rgba(26, 26, 26, 0.95);
             --nav-text: #ffffff;
-            --nav-hover: #2d2d2d;
-            --footer-bg: #1a1a1a;
+            --nav-hover: rgba(45, 45, 45, 0.95);
+            --footer-bg: rgba(26, 26, 26, 0.95);
             --footer-text: #ffffff;
-            --footer-hover: #2d2d2d;
+            --footer-hover: rgba(45, 45, 45, 0.95);
+            --accent-color: #2e7d32;
+            --gradient-start: #2e7d32;
+            --gradient-end: #1565C0;
+            --glow-color: rgba(46, 125, 50, 0.2);
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
+            background: var(--bg-gradient);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, var(--glow-color) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        #vanta-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+            background: var(--bg-gradient);
+            transition: background 0.3s;
         }
 
         .navbar {
-            background-color: var(--nav-bg);
+            background: var(--nav-bg);
             padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
@@ -69,11 +113,20 @@
             align-items: center;
             text-decoration: none;
             color: var(--nav-text);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo h1 {
             margin: 0;
             font-size: 1.5rem;
+            background: linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 3s ease infinite;
         }
 
         .nav-links {
@@ -86,11 +139,32 @@
             text-decoration: none;
             padding: 0.5rem 1rem;
             border-radius: 4px;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
         }
 
         .nav-links a:hover {
             background-color: var(--nav-hover);
+            transform: translateY(-2px);
         }
 
         .content {
@@ -98,13 +172,25 @@
             margin: 0 auto;
             padding: 20px;
             flex: 1;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
         }
 
         footer {
-            background-color: var(--footer-bg);
+            background: var(--footer-bg);
             color: var(--footer-text);
             padding: 2rem 0;
             margin-top: auto;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-content {
@@ -126,16 +212,50 @@
         .footer-links a {
             color: var(--footer-text);
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        .footer-links a:hover {
-            color: var(--footer-hover);
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
         }
 
         .copyright {
             font-size: 0.9rem;
             opacity: 0.8;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
         @media (max-width: 768px) {
@@ -147,11 +267,111 @@
             .footer-links {
                 justify-content: center;
             }
+
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+
+        /* Keep existing styles but update box-shadow and add subtle borders */
+        .feature-card, .bot-message, .user-message {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        /* Add subtle hover effects */
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Update button styles */
+        button {
+            background: linear-gradient(135deg, var(--button-bg), var(--button-hover));
+            border: none;
+            padding: 8px 15px;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--nav-bg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: var(--nav-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-sun {
+            display: none;
+        }
+
+        [data-theme="dark"] .theme-toggle .fa-moon {
+            display: inline-block;
+        }
+
+        .theme-toggle .fa-sun {
+            display: inline-block;
+            color: #ffd700;
+        }
+
+        .theme-toggle .fa-moon {
+            display: none;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <div id="vanta-background"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon"></i>
+    </button>
     <nav class="navbar">
         <a href="/" class="logo">
             <h1>DIY AI Assistant</h1>
@@ -180,6 +400,78 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Vanta.js background animation
+        let vantaEffect = null;
+
+        function initVanta() {
+            if (vantaEffect) vantaEffect.destroy();
+
+            vantaEffect = VANTA.BIRDS({
+                el: "#vanta-background",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                quantity: 5,
+                birdSize: 1,
+                wingSpan: 30,
+                speedLimit: 5,
+                separation: 20,
+                alignment: 20,
+                cohesion: 20,
+                colorMode: "lerpGradient",
+                backgroundAlpha: 0.0,
+                color1: getComputedStyle(document.documentElement).getPropertyValue('--gradient-start'),
+                color2: getComputedStyle(document.documentElement).getPropertyValue('--gradient-end')
+            });
+        }
+
+        // Initialize Vanta effect
+        document.addEventListener('DOMContentLoaded', initVanta);
+
+        // Theme change handler
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    // Update Vanta colors when theme changes
+                    if (vantaEffect) {
+                        vantaEffect.setOptions({
+                            color1: getComputedStyle(document.documentElement).getPropertyValue('--gradient-start'),
+                            color2: getComputedStyle(document.documentElement).getPropertyValue('--gradient-end')
+                        });
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (vantaEffect) vantaEffect.resize();
+        });
+
+        // Update the theme toggle function
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>
