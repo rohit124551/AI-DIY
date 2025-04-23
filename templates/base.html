@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}DIY Home Improvement Guide{% endblock %}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
@@ -8,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
+            /* Light theme variables */
             --bg-color: #f0f5ff;
             --bg-gradient: linear-gradient(135deg, #f0f5ff 0%, #e6f0ff 100%);
             --text-color: #2c3e50;
@@ -30,9 +33,12 @@
             --gradient-start: #4CAF50;
             --gradient-end: #2196F3;
             --glow-color: rgba(76, 175, 80, 0.2);
+            --theme-toggle-bg: #2c3e50;
+            --theme-toggle-icon: #ffd700;
         }
 
         [data-theme="dark"] {
+            /* Dark theme variables */
             --bg-color: #1a1f2c;
             --bg-gradient: linear-gradient(135deg, #1a1f2c 0%, #2c3e50 100%);
             --text-color: #ffffff;
@@ -55,6 +61,8 @@
             --gradient-start: #2e7d32;
             --gradient-end: #1565C0;
             --glow-color: rgba(46, 125, 50, 0.2);
+            --theme-toggle-bg: #e0e0e0;
+            --theme-toggle-icon: #1a1a2e;
         }
 
         body {
@@ -96,16 +104,18 @@
 
         .navbar {
             background: var(--nav-bg);
-            padding: 1rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo {
@@ -131,6 +141,7 @@
 
         .nav-links {
             display: flex;
+            align-items: center;
             gap: 2rem;
         }
 
@@ -306,61 +317,30 @@
         }
 
         .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
             border-radius: 50%;
-            background: var(--nav-bg);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: var(--nav-text);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+            margin-left: 1rem;
         }
 
         .theme-toggle:hover {
             transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .theme-toggle i {
             font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        [data-theme="dark"] .theme-toggle .fa-sun {
-            display: none;
-        }
-
-        [data-theme="dark"] .theme-toggle .fa-moon {
-            display: inline-block;
-        }
-
-        .theme-toggle .fa-sun {
-            display: inline-block;
-            color: #ffd700;
-        }
-
-        .theme-toggle .fa-moon {
-            display: none;
-            color: #ffffff;
+            color: var(--theme-toggle-icon);
         }
 
         @media (max-width: 768px) {
             .theme-toggle {
-                top: 10px;
-                right: 10px;
-                width: 35px;
-                height: 35px;
+                margin-left: 0.5rem;
             }
         }
     </style>
@@ -369,8 +349,7 @@
 <body>
     <div id="vanta-background"></div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-        <i class="fas fa-sun"></i>
-        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun" id="theme-icon"></i>
     </button>
     <nav class="navbar">
         <a href="/" class="logo">
@@ -380,6 +359,9 @@
             <a href="/">Home</a>
             <a href="/about">About Us</a>
             <a href="https://github.com/yourusername/diy-ai-assistant" target="_blank">GitHub</a>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="fas fa-sun" id="theme-icon"></i>
+            </button>
         </div>
     </nav>
 
@@ -460,16 +442,29 @@
 
         // Update the theme toggle function
         function toggleTheme() {
-            const currentTheme = localStorage.getItem('theme') || 'light';
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            themeIcon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+            
+            // Trigger theme change event for Vanta.js
+            const event = new CustomEvent('themechange', { detail: { theme: newTheme } });
+            document.dispatchEvent(event);
         }
 
         // Initialize theme on page load
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
+            const themeIcon = document.getElementById('theme-icon');
+            
             document.documentElement.setAttribute('data-theme', savedTheme);
+            themeIcon.className = savedTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
         });
     </script>
 
