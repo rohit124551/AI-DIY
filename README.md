@@ -2,6 +2,8 @@
 
 A modern, interactive AI-powered assistant for DIY home improvement projects. This web application helps users with their home improvement questions, providing detailed guidance, safety tips, and professional recommendations.
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/rohit124551/AI_DIY_HOME_IMPROVEMENT_PROJECT-EA)
+
 ## Features
 
 - 🤖 AI-powered DIY assistance using Google's Gemini API
@@ -48,8 +50,8 @@ Before running this project, make sure you have:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/diy-ai-assistant.git
-cd diy-ai-assistant
+git clone https://github.com/rohit124551/AI_DIY_HOME_IMPROVEMENT_PROJECT-EA.git
+cd AI_DIY_HOME_IMPROVEMENT_PROJECT-EA
 ```
 
 2. Create and activate a virtual environment:
@@ -165,7 +167,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-For support, please open an issue in the GitHub repository or contact us through the website's contact form.
+For support, please open an issue in the [GitHub repository](https://github.com/rohit124551/AI_DIY_HOME_IMPROVEMENT_PROJECT-EA) or contact us through the website's contact form.
 
 ## Future Enhancements
 
@@ -181,4 +183,4 @@ For support, please open an issue in the GitHub repository or contact us through
 
 ---
 
-Made with ❤️ by [Your Name] 
+Made with ❤️ by [Rohit](https://github.com/rohit124551) 
